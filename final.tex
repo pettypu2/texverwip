@@ -1,1 +1,116 @@
 
+%
+% LaTeX2e template for FIT2002
+%
+
+
+\documentclass[a4j,twocolumn]{jarticle}
+\usepackage[dvips]{graphicx}
+\usepackage{url}
+
+\makeatletter
+\def\section{\@startsection{section}{1}{\z@}{2ex plus .2ex minus .2ex}%
+      {.5ex plus .2ex minus .2ex}{\large\bfseries}}
+\def\thesection{\arabic{section}.}
+\def\subsection{\@startsection{subsection}{1}{\z@}{.7ex plus .2ex minus .2ex}%
+      {.5ex plus .2ex minus .2ex}{\normalsize\bfseries}}
+\def\thesubsection{\arabic{section}.\arabic{subsection}}
+\def\thefootnote{\fnsymbol{footnote}}
+\makeatother
+
+\def\baselinestretch{0.8}
+
+\setlength{\textheight}{26.5cm}%297-30-27 - 5
+\setlength{\textwidth}{17.4cm}%210-18-18 - 10
+%\setlength{\headheight}{0.0in}
+\setlength{\headsep}{0.0in}
+\setlength{\oddsidemargin}{-.9cm}%+3
+\setlength{\evensidemargin}{-.9cm}%+3
+\setlength{\columnsep}{7mm}
+\usepackage[dvipdfmx]{graphicx}
+% local settings
+
+% end of local settings
+
+\begin{document}
+\pagestyle{empty}
+\thispagestyle{empty}
+
+\twocolumn[%
+\begin{center}
+ {\Large MyRecipe:文字書き換え機能を使用した料理初学者向けレシピ利用補助システムの開発/}\vspace{.5ex}
+ {\Large\sffamily }\vspace{1ex}
+
+\large
+\mbox{}
+\hfil
+\setcounter{footnote}{2}
+{\bfseries Life-Cloud B3 岩淵　駿(iwatchi)}${}^\thefootnote$
+\hfil
+\setcounter{footnote}{3}
+{\bfseries Adviser：江頭 和輝(zukky)}${}^\thefootnote$
+\hfil
+\mbox{}
+
+\mbox{}
+\hfil
+{\sffamily}
+\hfil
+{\sffamily}
+\hfil
+\mbox{}
+\hfil
+
+\end{center}
+]
+
+\setcounter{footnote}{2}
+\footnotetext{慶應義塾大学　環境情報学部}
+\setcounter{footnote}{3}
+\footnotetext{慶應義塾大学　政策/メディア研究科}
+
+\section{概要}
+  クックパッドのレシピページの材料を変更し,料理初学者が調理しやすいレシピの内容を作成するレシピ改良システムを提案する.
+\section{背景}
+  近年,利用者が投稿したレシピを閲覧できるレシピ情報サイトが広く利用されるようになった.クックパッドの2016年の第二四半期で発表された集計結果\cite{cpd2016}によると,PC,スマホ,ガラケーの利用者数の合計は,約6,109万人となっている.2014年の同四半期は4,404万人だった.\cite{cpd2014}また,インターネットコムとgooリサーチによる「レシピサイト/レシピアプリ」に関する調査（2012年11月）によると,自分で料理する人に対して,料理をする際にレシピサイト/レシピアプリを利用しているかどうかについて聞いたところ,約8割の78.1％が「利用する」と回答した（「よく利用する」28.5％,「たまに利用する」49.6％）.料理をする人におけるレシピサイト/アプリの浸透率の高さが示された.\cite{sharemaru2015}（2013年7月）によると,料理をする際の「最も参考にする情報源」はレシピサイト（57％）が1位であり,料理の本（15％）,テレビ（9％）,両親や祖父母（7％）などを突き放して圧倒的トップとなっていた.\cite{sharemaru2015}
+\section{問題意識}
+  クックパッド上では多数のレシピを参照できるが,一部のレシピに使われる材料は知名度や普及率が低いため,料理初学者の既知の食材にない場合がある.知名度が低い食材を広く普及している既存の食材で置きかえる.また,多くのレシピに見られる抽象的な表現(例:きつね色の焼きかげん,耳たぶの硬さの生地)も料理初学者には基準を把握することが難しい.これらは調理の敷居を高くし料理初学者が調理を挫折する要因となる.
+
+\section{Myrecipe}
+  Myrecipeは,クックパッド上のレシピページの単語を置き換えることで,レシピの文中に登場する抽象的な表現や,知名度の低い食材と行った料理初学者の障害になる要素を変更し,レシピを使いやすくする利用補助システムである.
+\subsection{予想使用例}
+  レシピ中には[きつね色の焼き加減]や,[耳たぶのかたさまで生地をこねる]といった表現が使われる.これらを[明るいオレンジ色],[弾力性がありちぎりにくい]などの表現に置き換えることで,調理の敷居を低くする.同時に,[ナツメグ]などの知名度の低い食材も料理のレベルをあげているため,これらを[ハーブ]など知名度の高い材料に置き換えることでレシピを利用しやすくすることがねらいである.
+\subsection{機能要件}
+  Javascriptを使用し単語の書き換えを行う.また,書き換えの対象となる単語と書き換え後の単語を登録した辞書を作成する.
+\subsection{アプローチ}
+  アプローチとして,単語書き換えモジュールを使用しレシピページの単語を書き換える.
+\par 手順として,最初にクックパッドのレシピページを読み込み,ページ解析モジュールによって単語を抽出する.抽出した単語を単語書き換えモジュールに通し,テキスト情報に変換して単語のテキスト情報を格納する辞書と照合を行う.抽出された単語と同じ合致する単語が辞書に見つかった場合,単語を書き換える.辞書には,書き換え前の単語は[before],書き換え後の単語は[after]として格納しておく.書き換え後,for文でウェブページ上の抽出されたすべての単語の照合と書き換えが終了するまで繰り返し,処理を行う.全て書き換え終えたら処理を終了する.書き換えの処理が終了したら表示モジュールによって内容を表示し,ユーザにフィードバックする.
+
+\section{実装環境}
+  実装環境として,デバイスにはMacbook Airを使用し,OSにはOS X El Capitanを使用する.アプリケーションの実装にはjavascriptを使用する.また,ブラウザにはGoogle Chromeを使用する.システム構成図は図１に示す.
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\linewidth]{sys1.eps}
+\caption{システム構成図}
+\end{figure}
+
+\section{まとめ}
+  文字書き換えによってクックパッド上のレシピの利便性を向上する料理初学者向けインターネットレシピ利用補助システムを提案した.
+
+% \bibliographystyle{junsrt}
+% \bibliography{test.bib}
+
+\begin{thebibliography}{5}
+  \bibitem {cpd2016} クックパッド決算説明資料2016第二四半期
+  \url{http://cf.cpcdn.com/info/assets.html}
+  \year 最終閲覧日 2017.01.17
+  \bibitem {cpd2014} クックパッド決算説明資料2014第二四半期
+  \url{http://cf.cpcdn.com/info/assets.html}
+  \year 最終閲覧日 2017.01.17
+  \bibitem {sharemaru2015} クックパッドの利用率光る/レシピシェアサイト早わかり
+ \url{http://ascii.jp/elem/000/000/951/951053/index-2.html}
+ \year 最終閲覧日 2017.01.17
+\end{thebibliography}
+
+
+\end{document}
